@@ -21,6 +21,9 @@ using CsvHelper.MissingFrom20;
 #if WINRT_4_5
 using CsvHelper.MissingFromRt45;
 #endif
+#if NET_4_5 || WINRT_4_5
+using System.Threading.Tasks;
+#endif
 
 namespace CsvHelper
 {
@@ -418,6 +421,65 @@ namespace CsvHelper
 				NextRecord();
 			}
 		}
+
+#if NET_4_5 || WINRT_4_5
+		/// <summary>
+		/// Asynchronously ends writing of the current record
+		/// and starts a new record. This is used
+		/// when manually writing records with <see cref="ICsvWriter.WriteField{T}(T)"/>
+		/// </summary>
+		public async Task NextRecordAsync()
+		{
+			await Task.Run( () => NextRecord() );
+		}
+
+		/// <summary>
+		/// Asynchronously writes the header record from the given properties.
+		/// </summary>
+		/// <typeparam name="T">The type of the record.</typeparam>
+		public async Task WriteHeaderAsync<T>()
+		{
+			await Task.Run( () => WriteHeader<T>() );
+		}
+
+		/// <summary>
+		/// Asynchronously writes the header record from the given properties.
+		/// </summary>
+		/// <param name="type">The type of the record.</param>
+		public async Task WriteHeaderAsync( Type type )
+		{
+			await Task.Run( () => WriteHeader( type ) );
+		}
+
+		/// <summary>
+		/// Asynchronously writes the record to the CSV file.
+		/// </summary>
+		/// <typeparam name="T">The type of the record.</typeparam>
+		/// <param name="record">The record to write.</param>
+		public async Task WriteRecordAsync<T>( T record )
+		{
+			await Task.Run( () => WriteRecord<T>( record ) );
+		}
+
+		/// <summary>
+		/// Asynchronously writes the record to the CSV file.
+		/// </summary>
+		/// <param name="type">The type of the record.</param>
+		/// <param name="record">The record to write.</param>
+		public async Task WriteRecordAsync( Type type, object record )
+		{
+			await Task.Run( () => WriteRecord( type, record ) );
+		}
+
+		/// <summary>
+		/// Asynchronously writes the list of records to the CSV file.
+		/// </summary>
+		/// <param name="records">The list of records to write.</param>
+		public async Task WriteRecordsAsync( IEnumerable records )
+		{
+			await Task.Run( () => WriteRecords( records ) );
+		}
+#endif
 
 		/// <summary>
 		/// Clears the record cache for the given type. After <see cref="ICsvWriter.WriteRecord{T}"/> is called the

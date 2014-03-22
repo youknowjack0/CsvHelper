@@ -7,6 +7,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
+#if NET_4_5 || WINRT_4_5
+using System.Threading.Tasks;
+#endif
 
 namespace CsvHelper
 {
@@ -361,6 +364,44 @@ namespace CsvHelper
 		/// <param name="type">The <see cref="Type"/> of the record.</param>
 		/// <returns>An <see cref="IList{Object}" /> of records.</returns>
 		IEnumerable<object> GetRecords( Type type );
+
+#if NET_4_5 || WINRT_4_5
+		/// <summary>
+		/// Gets the record asynchronously converted into <see cref="Type"/> T.
+		/// </summary>
+		/// <typeparam name="T">The <see cref="Type"/> of the record.</typeparam>
+		/// <returns>A <see cref="Task{T}"/> record.</returns>
+		Task<T> GetRecordAsync<T>();
+
+		/// <summary>
+		/// Gets the record asynchronously.
+		/// </summary>
+		/// <param name="type">The <see cref="Type"/> of the record.</param>
+		/// <returns>A <see cref="Task{object}"/> record.</returns>
+		Task<object> GetRecordAsync( Type type );
+
+		/// <summary>
+		/// Gets all the records in the CSV file asynchronously and
+		/// converts each to <see cref="Type"/> T. The Read method
+		/// should not be used when using this. Calling this will
+		/// not return an IEnuerable that yields records. All records
+		/// will be retrieved before the task completes.
+		/// </summary>
+		/// <typeparam name="T">The <see cref="Type"/> of the record.</typeparam>
+		/// <returns>A <see cref="Task{IEnumerable{T}}" /> of records.</returns>
+		Task<IEnumerable<T>> GetRecordsAsync<T>();
+
+		/// <summary>
+		/// Gets all the records in the CSV file asynchronously and
+		/// converts each to <see cref="Type"/> T. The Read method
+		/// should not be used when using this. Calling this will
+		/// not return an IEnuerable that yields records. All records
+		/// will be retrieved before the task completes.
+		/// </summary>
+		/// <param name="type">The <see cref="Type"/> of the record.</param>
+		/// <returns>A <see cref="Task{IEnumerable{Object}}" /> of records.</returns>
+		Task<IEnumerable<object>> GetRecordsAsync( Type type );
+#endif
 
 		/// <summary>
 		/// Clears the record cache for the given type. After <see cref="GetRecord{T}"/> is called the

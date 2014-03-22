@@ -7,6 +7,9 @@ using System.Collections;
 using System.Collections.Generic;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
+#if NET_4_5 || WINRT_4_5
+using System.Threading.Tasks;
+#endif
 
 namespace CsvHelper
 {
@@ -132,6 +135,47 @@ namespace CsvHelper
 		/// </summary>
 		/// <param name="records">The list of records to write.</param>
 		void WriteRecords( IEnumerable records );
+
+#if NET_4_5 || WINRT_4_5
+		/// <summary>
+		/// Asynchronously ends writing of the current record
+		/// and starts a new record. This is used
+		/// when manually writing records with <see cref="WriteField{T}( T )"/>
+		/// </summary>
+		Task NextRecordAsync();
+
+		/// <summary>
+		/// Asynchronously writes the header record from the given properties.
+		/// </summary>
+		/// <typeparam name="T">The type of the record.</typeparam>
+		Task WriteHeaderAsync<T>();
+
+		/// <summary>
+		/// Asynchronously writes the header record from the given properties.
+		/// </summary>
+		/// <param name="type">The type of the record.</param>
+		Task WriteHeaderAsync( Type type );
+
+		/// <summary>
+		/// Asynchronously writes the record to the CSV file.
+		/// </summary>
+		/// <typeparam name="T">The type of the record.</typeparam>
+		/// <param name="record">The record to write.</param>
+		Task WriteRecordAsync<T>( T record );
+
+		/// <summary>
+		/// Asynchronously writes the record to the CSV file.
+		/// </summary>
+		/// <param name="type">The type of the record.</param>
+		/// <param name="record">The record to write.</param>
+		Task WriteRecordAsync( Type type, object record );
+
+		/// <summary>
+		/// Asynchronously writes the list of records to the CSV file.
+		/// </summary>
+		/// <param name="records">The list of records to write.</param>
+		Task WriteRecordsAsync( IEnumerable records );
+#endif
 
 		/// <summary>
 		/// Clears the record cache for the given type. After <see cref="WriteRecord{T}"/> is called the
