@@ -32,6 +32,7 @@ namespace CsvHelper
 		private char c = '\0';
 		private bool read;
 		private bool hasExcelSeparatorBeenRead;
+	    private bool firstRow = true;
 
 		/// <summary>
 		/// Gets the configuration.
@@ -199,7 +200,7 @@ namespace CsvHelper
 				// headers there is. If there is no header
 				// record, then we can go by the first row.
 				// Either way, we're using the first row.
-				if( currentRow == 1 )
+                if (firstRow)
 				{
 					FieldCount = record.Length;
 				}
@@ -421,6 +422,8 @@ namespace CsvHelper
 				RawRecord += new string( readerBuffer, rawFieldStartPosition, readerBufferPosition - rawFieldStartPosition );
 			}
 
+		    firstRow = false;
+
 			return record;
 		}
 
@@ -513,5 +516,20 @@ namespace CsvHelper
 
 			hasExcelSeparatorBeenRead = true;
 		}
+
+        /// <summary>
+        /// Reset buffers and whatnot, used after seeking. Keeps header row info
+        /// </summary>
+	    protected virtual void Reset()
+        {
+            this.BytePosition = 0;
+            this.CharPosition = 0;
+            this.RawRecord = string.Empty;
+            this.currentRow = 0;
+            this.record = null;
+            this.readerBufferPosition = 0;
+            this.read = false;
+            this.cPrev = null;            
+        }
 	}
 }
