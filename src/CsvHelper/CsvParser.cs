@@ -529,7 +529,8 @@ namespace CsvHelper
             this.record = null;
             this.readerBufferPosition = 0;
             this.read = false;
-            this.cPrev = null;            
+            this.cPrev = null;
+            this.charsRead = 0;
         }
 	}
 }
