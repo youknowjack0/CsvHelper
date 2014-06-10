@@ -17,11 +17,11 @@ namespace CsvHelper
         private long _bytePositionRecord;
         private StreamReader _streamReader;
 
-        public SeekingCsvParser(TextReader reader) : this(reader, new CsvConfiguration())
+        public SeekingCsvParser(TextReader reader, int initbytes = 0) : this(reader, new CsvConfiguration(), initbytes)
         {            
         }
 
-        public SeekingCsvParser(TextReader reader, CsvConfiguration configuration) : base(reader, configuration)
+        public SeekingCsvParser(TextReader reader, CsvConfiguration configuration, int initbytes) : base(reader, configuration)
         {
             if (!configuration.CountBytes)
                 throw new ArgumentException("Expected configuration.CountBytes to be set to true");
@@ -34,13 +34,13 @@ namespace CsvHelper
             if (sr.BaseStream.Position < 0)
                 throw new ArgumentException("Underlying stream reports offset < 0");
 
-            _initOffset = sr.BaseStream.Position;
-            _bytePositionRecord = _initOffset;
+            _initOffset = initbytes;
+            _bytePositionRecord = 0;
             _streamReader = sr;
         }
 
         /// <summary>
-        /// Get the byte position of the start of the line for the current record, offset for initial stream position
+        /// Get the byte position of the start of the line for the current record
         /// </summary>
         public virtual long BytePositionRecord
         {
@@ -93,11 +93,12 @@ namespace CsvHelper
         /// </summary>
         /// <param name="position">A byte offset position to seek to in the underlying stream.</param>
         /// <param name="origin">Reference point</param>
-        public void Seek(long position, SeekOrigin origin)
+        private void Seek(long position, SeekOrigin origin)
         {
             base.CheckDisposed();
-            _streamReader.BaseStream.Seek(position, SeekOrigin.Begin);
+            _streamReader.BaseStream.Seek(position, origin);
             _streamReader.DiscardBufferedData();
+            _initOffset = position; 
             base.Reset();
         }
     }
