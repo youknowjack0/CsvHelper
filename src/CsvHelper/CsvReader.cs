@@ -68,7 +68,8 @@ namespace CsvHelper
 			get
 			{
 				CheckDisposed();
-				CheckHasBeenRead();
+			    if (headerRecord == null)
+			        throw new InvalidOperationException("Header hasn't been read; use Read() or ReadHeaders()");
 
 				return headerRecord;
 			}
@@ -150,6 +151,23 @@ namespace CsvHelper
 			this.parser = parser;
 			configuration = parser.Configuration;
 		}
+
+        /// <summary>
+        /// force read headers
+        /// </summary>
+	    public virtual bool ReadHeaders()
+	    {
+            CheckDisposed();
+
+            if (configuration.HasHeaderRecord && headerRecord == null)
+            {
+                headerRecord = parser.Read();
+                ParseNamedIndexes();
+                return true;
+            }
+
+            return false;
+	    }
 
 		/// <summary>
 		/// Advances the reader to the next record.
