@@ -35,7 +35,7 @@ namespace CsvHelper.Configuration
 		private char[] quoteRequiredChars;
 		private char comment = '#';
 		private int bufferSize = 2048;
-		private bool isHeaderCaseSensitive = true;
+		private bool isHeaderCaseSensitive = false;
 		private Encoding encoding = Encoding.UTF8;
 		private CultureInfo cultureInfo = CultureInfo.CurrentCulture;
 		private bool quoteAllFields;

@@ -1203,7 +1203,7 @@ namespace CsvHelper
 					// If we're in strict reading mode and the
 					// named index isn't found, throw an exception.
 					var namesJoined = string.Format( "'{0}'", string.Join( "', '", names ) );
-					throw new CsvMissingFieldException( string.Format( "Fields {0} do not exist in the CSV file.", namesJoined ) );
+					throw new CsvMissingFieldException( string.Format( "One or more fields {0} do not exist in the CSV file.", namesJoined ) );
 				}
 
 				return -1;
