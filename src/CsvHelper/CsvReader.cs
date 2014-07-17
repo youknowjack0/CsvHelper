@@ -1173,43 +1173,22 @@ namespace CsvHelper
 				throw new CsvReaderException( "There is no header record to determine the index by name." );
 			}
 
-			var compareOptions = !Configuration.IsHeaderCaseSensitive ? CompareOptions.IgnoreCase : CompareOptions.None;
-			string name = null;
-			foreach( var pair in namedIndexes )
+		    foreach (var s in names)
+		    {
+		        List<int> i;
+		        if (namedIndexes.TryGetValue(s, out i) && index < i.Count)
+		        {
+		            return i[index];
+		        }
+		    }
+			if( configuration.WillThrowOnMissingField && !isTryGet )
 			{
-				var namedIndex = pair.Key;
-				if( configuration.IgnoreHeaderWhiteSpace )
-				{
-					namedIndex = Regex.Replace( namedIndex, "\\s", string.Empty );
-				}
-				else if( configuration.TrimHeaders )
-				{
-					namedIndex = namedIndex.Trim();
-				}
-
-				foreach( var n in names )
-				{
-					if( Configuration.CultureInfo.CompareInfo.Compare( namedIndex, n, compareOptions ) == 0 )
-					{
-						name = pair.Key;
-					}
-				}
+				// If we're in strict reading mode and the
+				// named index isn't found, throw an exception.
+				var namesJoined = string.Format( "'{0}'", string.Join( "', '", names ) );
+				throw new CsvMissingFieldException( string.Format( "Fields {0} do not exist in the CSV file.", namesJoined ) );
 			}
-
-			if( name == null )
-			{
-				if( configuration.WillThrowOnMissingField && !isTryGet )
-				{
-					// If we're in strict reading mode and the
-					// named index isn't found, throw an exception.
-					var namesJoined = string.Format( "'{0}'", string.Join( "', '", names ) );
-					throw new CsvMissingFieldException( string.Format( "Fields {0} do not exist in the CSV file.", namesJoined ) );
-				}
-
-				return -1;
-			}
-
-			return namedIndexes[name][index];
+			return -1;
 		}
 
 		/// <summary>
