@@ -38,7 +38,7 @@ namespace CsvHelper
 		private ICsvParser parser;
 		private int currentIndex = -1;
 		private bool doneReading;
-		private readonly Dictionary<string, List<int>> namedIndexes = new Dictionary<string, List<int>>();
+		private readonly Dictionary<string, List<int>> namedIndexes = new Dictionary<string, List<int>>(StringComparer.OrdinalIgnoreCase);
 #if !NET_2_0
 		private readonly Dictionary<Type, Delegate> recordFuncs = new Dictionary<Type, Delegate>();
 #endif
@@ -1147,7 +1147,7 @@ namespace CsvHelper
 		/// <returns>The index of the field if found, otherwise -1.</returns>
 		/// <exception cref="CsvReaderException">Thrown if there is no header record.</exception>
 		/// <exception cref="CsvMissingFieldException">Thrown if there isn't a field with name.</exception>
-		protected virtual int GetFieldIndex( string name, int index = 0, bool isTryGet = false )
+		public virtual int GetFieldIndex( string name, int index = 0, bool isTryGet = false )
 		{
 			return GetFieldIndex( new[] { name }, index, isTryGet );
 		}
